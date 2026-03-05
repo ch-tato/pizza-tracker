@@ -14,7 +14,7 @@ type DBModel struct {
 func InitDB(dataSourceName string) (*DBModel, error) {
 	db, err := gorm.Open(sqlite.Open(dataSourceName), &gorm.Config{})
 	if err != nil {
-		return nil, fmt.Errorf("Failed to migrate database: %v", err)
+		return nil, fmt.Errorf("Failed to connect to database: %v", err)
 	}
 	err = db.AutoMigrate(&Order{}, &OrderItem{})
 	if err != nil {
