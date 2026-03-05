@@ -1,0 +1,9 @@
+# Binaries
+pizza-tracker-go
+
+# Database
+data/*.db
+data/*.db-journal
+
+# Go workspace file
+go.work

@@ -1,0 +1,25 @@
+package main
+
+import (
+	"pizza-tracker-go/internal/models"
+	"slices"
+
+	"github.com/gin-gonic/gin/binding"
+	"github.com/go-playground/validator"
+)
+
+func RegisterCustomValidators() {
+	if v, ok := binding.Validator.Engine().(*validator.Validate); ok {
+		v.RegisterValidation("valid_pizza_type", createSliceValidator(models.PizzaTypes))
+		v.RegisterValidation("valid_pizza_size", createSliceValidator(models.PizzaSizes))
+		v.RegisterValidation("valid_pizza_crust", createSliceValidator(models.PizzaCrusts))
+		v.RegisterValidation("valid_pizza_addon", createSliceValidator(models.PizzaAddOns))
+
+	}
+}
+
+func createSliceValidator(allowedValues []string) validator.Func {
+	return func(fl validator.FieldLevel) bool {
+		return slices.Contains(allowedValues, fl.Field().String())
+	}
+}
