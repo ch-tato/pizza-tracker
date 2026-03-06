@@ -8,4 +8,4 @@ data/*.db-journal
 # Go workspace file
 go.work
 
-walkthrough.md.resolved
+*.resolved
