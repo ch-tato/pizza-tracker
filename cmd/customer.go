@@ -16,14 +16,14 @@ type OrderFormData struct {
 }
 
 type OrderRequest struct {
-	Name         string   `json:"name" binding:"required,min=3,max=64"`
-	Phone        string   `json:"phone" binding:"required,e164"`
-	Address      string   `json:"address" binding:"required,min=5,max=256"`
-	PizzaSizes   []string `json:"sizes" binding:"required,dive,valid_pizza_size"`
-	PizzaTypes   []string `json:"types" binding:"required,dive,valid_pizza_type"`
-	PizzaCrusts  []string `json:"crusts" binding:"required,dive,valid_pizza_crust"`
-	PizzaAddOns  []string `json:"addons" binding:"dive,valid_pizza_addon"`
-	Instructions []string `json:"instructions" binding:"max=256"`
+	Name         string   `form:"name" json:"name" binding:"required,min=3,max=64"`
+	Phone        string   `form:"phone" json:"phone" binding:"required,e164"`
+	Address      string   `form:"address" json:"address" binding:"required,min=5,max=256"`
+	PizzaSizes   []string `form:"sizes" json:"sizes" binding:"required,dive,valid_pizza_size"`
+	PizzaTypes   []string `form:"types" json:"types" binding:"required,dive,valid_pizza_type"`
+	PizzaCrusts  []string `form:"crusts" json:"crusts" binding:"required,dive,valid_pizza_crust"`
+	PizzaAddOns  []string `form:"addons" json:"addons" binding:"dive,valid_pizza_addon"`
+	Instructions []string `form:"instructions" json:"instructions" binding:"dive,max=256"`
 }
 
 func (h *Handler) ServeNewOrderForm(c *gin.Context) {
@@ -44,12 +44,20 @@ func (h *Handler) HandleNewOrderPost(c *gin.Context) {
 
 	orderItems := make([]models.OrderItem, len(form.PizzaSizes))
 	for i := range orderItems {
+		// Helper to safely get from slice
+		safeGet := func(slice []string, idx int) string {
+			if idx < len(slice) {
+				return slice[idx]
+			}
+			return ""
+		}
+
 		orderItems[i] = models.OrderItem{
-			PizzaType:    form.PizzaTypes[i],
-			PizzaSize:    form.PizzaSizes[i],
-			PizzaCrust:   form.PizzaCrusts[i],
-			AddOns:       form.PizzaAddOns[i],
-			Instructions: form.Instructions[i],
+			PizzaType:    safeGet(form.PizzaTypes, i),
+			PizzaSize:    safeGet(form.PizzaSizes, i),
+			PizzaCrust:   safeGet(form.PizzaCrusts, i),
+			AddOns:       safeGet(form.PizzaAddOns, i),
+			Instructions: safeGet(form.Instructions, i),
 		}
 	}
 

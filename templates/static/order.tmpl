@@ -55,7 +55,7 @@
             <div class="space-y-4">
                 <div>
                     <label class="block text-gray-700 text-sm font-medium mb-2">Size</label>
-                    <select name="size" required
+                    <select name="sizes" required
                         class="w-full p-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-800 focus:border-transparent transition-all bg-white">
                         {{range $.PizzaSizes}}
                         <option value="{{.}}">{{.}}</option>
@@ -64,9 +64,27 @@
                 </div>
                 <div>
                     <label class="block text-gray-700 text-sm font-medium mb-2">Pizza Type</label>
-                    <select name="pizza" required
+                    <select name="types" required
                         class="w-full p-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-800 focus:border-transparent transition-all bg-white">
                         {{range $.PizzaTypes}}
+                        <option value="{{.}}">{{.}}</option>
+                        {{end}}
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-gray-700 text-sm font-medium mb-2">Crust Type</label>
+                    <select name="crusts" required
+                        class="w-full p-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-800 focus:border-transparent transition-all bg-white">
+                        {{range $.PizzaCrusts}}
+                        <option value="{{.}}">{{.}}</option>
+                        {{end}}
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-gray-700 text-sm font-medium mb-2">Add-Ons</label>
+                    <select name="addons" required
+                        class="w-full p-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-800 focus:border-transparent transition-all bg-white">
+                        {{range $.PizzaAddOns}}
                         <option value="{{.}}">{{.}}</option>
                         {{end}}
                     </select>
