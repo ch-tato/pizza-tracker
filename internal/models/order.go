@@ -11,7 +11,7 @@ var (
 	OrderStatuses = []string{
 		"Order Placed",
 		"Preparing",
-		"Ready for Pickup",
+		"Baking",
 		"Out for Delivery",
 		"Delivered",
 	}

@@ -9,9 +9,9 @@ import (
 )
 
 type OrderFormData struct {
-	PizzaType   []string
-	PizzaSize   []string
-	PizzaCrust  []string
+	PizzaTypes  []string
+	PizzaSizes  []string
+	PizzaCrusts []string
 	PizzaAddOns []string
 }
 
@@ -28,9 +28,9 @@ type OrderRequest struct {
 
 func (h *Handler) ServeNewOrderForm(c *gin.Context) {
 	c.HTML(http.StatusOK, "order.tmpl", OrderFormData{
-		PizzaType:   models.PizzaTypes,
-		PizzaSize:   models.PizzaSizes,
-		PizzaCrust:  models.PizzaCrusts,
+		PizzaTypes:  models.PizzaTypes,
+		PizzaSizes:  models.PizzaSizes,
+		PizzaCrusts: models.PizzaCrusts,
 		PizzaAddOns: models.PizzaAddOns,
 	})
 }
