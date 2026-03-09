@@ -3,20 +3,26 @@ package main
 import (
 	"encoding/json"
 	"html/template"
+	"log/slog"
 	"os"
 
+	"github.com/gin-contrib/sessions"
+	gormsessions "github.com/gin-contrib/sessions/gorm"
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
 type Config struct {
-	Port   string
-	DBPath string
+	Port             string
+	DBPath           string
+	SessionSecretKey string
 }
 
 func loadConfig() Config {
 	return Config{
-		Port:   getEnv("PORT", "8080"),
-		DBPath: getEnv("DB_URL", "./data/orders.db"),
+		Port:             getEnv("PORT", "8080"),
+		DBPath:           getEnv("DB_URL", "./data/orders.db"),
+		SessionSecretKey: getEnv("SESSION_SECRET_KEY", "pizza-order-secret-key"),
 	}
 }
 
@@ -43,4 +49,53 @@ func loadTemplates(router *gin.Engine) error {
 	}
 	router.SetHTMLTemplate(tmpl)
 	return nil
+}
+
+func setupSessionStore(db *gorm.DB, secretKey []byte) sessions.Store {
+	store := gormsessions.NewStore(db, true, secretKey)
+	store.Options(sessions.Options{
+		Path:     "/",
+		MaxAge:   86400, // 24h
+		HttpOnly: true,
+		Secure:   true,
+		SameSite: 3,
+	})
+	slog.Info("Session store configured", "backend", "gorm-sqlite", "lifetime", "24h")
+	return store
+}
+
+func GetSession(c *gin.Context) sessions.Session {
+	return sessions.Default(c)
+}
+
+func SetSessionValue(c *gin.Context, key string, value any) error {
+	session := GetSession(c)
+	session.Set(key, value)
+	return session.Save()
+}
+
+func GetSessionString(c *gin.Context, key string) string {
+	session := GetSession(c)
+	val := session.Get(key)
+	if val == nil {
+		return ""
+	}
+	str, _ := val.(string)
+	return str
+}
+
+func GetSessionValue(c *gin.Context, key string) any {
+	return GetSession(c).Get(key)
+}
+
+func ClearSession(c *gin.Context) error {
+	session := GetSession(c)
+	session.Clear()
+	return session.Save()
+}
+
+func DeleteSessionKey(c *gin.Context, key string) error {
+	session := GetSession(c)
+	session.Delete(key)
+	return session.Save()
 }

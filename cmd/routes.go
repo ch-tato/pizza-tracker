@@ -1,11 +1,25 @@
 package main
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/gin-contrib/sessions"
+	"github.com/gin-gonic/gin"
+)
 
-func setupRoutes(router *gin.Engine, h *Handler) {
+func setupRoutes(router *gin.Engine, h *Handler, store sessions.Store) {
+	router.Use(sessions.Sessions("pizza-tracker", store))
 	router.GET("/", h.ServeNewOrderForm)
 	router.POST("/new-order", h.HandleNewOrderPost)
 	router.GET("/customer/:id", h.serveCustomer)
+
+	router.GET("/login", h.HandleLoginGet)
+	router.POST("/login", h.HandleLoginPost)
+	router.GET("/logout", h.HandleLogout)
+
+	admin := router.Group("/admin")
+	admin.Use(h.AuthMiddleware())
+	{
+		admin.GET("", h.ServeAdminDashboard)
+	}
 
 	router.Static("/static", "templates/static")
 }
