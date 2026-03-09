@@ -56,7 +56,7 @@ func (h *Handler) HandleLogout(c *gin.Context) {
 
 func (h *Handler) ServeAdminDashboard(c *gin.Context) {
 	username := GetSessionString(c, "username")
-	c.HTML(http.StatusOK, "admin", AdminDashboardData{
+	c.HTML(http.StatusOK, "admin.tmpl", AdminDashboardData{
 		Username: username,
 	})
 }
