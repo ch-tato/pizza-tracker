@@ -13,7 +13,7 @@ func setupRoutes(router *gin.Engine, h *Handler, store sessions.Store) {
 
 	router.GET("/login", h.HandleLoginGet)
 	router.POST("/login", h.HandleLoginPost)
-	router.GET("/logout", h.HandleLogout)
+	router.POST("/logout", h.HandleLogout)
 
 	admin := router.Group("/admin")
 	admin.Use(h.AuthMiddleware())
