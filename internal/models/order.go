@@ -97,3 +97,17 @@ func (o *OrderModel) GetOrderByID(id string) (*Order, error) {
 	err := o.DB.Preload("Items").First(&order, "id = ?", id).Error
 	return &order, err
 }
+
+func (o *OrderModel) GetAllOrders() ([]Order, error) {
+	var orders []Order
+	err := o.DB.Preload("Items").Order("created_at desc").Find(&orders).Error
+	return orders, err
+}
+
+func (o *OrderModel) UpdateOrderStatus(id string, status string) error {
+	return o.DB.Model(&Order{}).Where("id = ?", id).Update("status", status).Error
+}
+
+func (o *OrderModel) DeleteOrder(id string) error {
+	return o.DB.Select("Items").Delete(&Order{ID: id}).Error
+}
