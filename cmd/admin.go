@@ -79,6 +79,7 @@ func (h *Handler) HandleOrderPut(c *gin.Context) {
 		c.String(http.StatusInternalServerError, err.Error())
 		return
 	}
+	h.notificationManager.Notify("order:"+id, "order_updated")
 	c.Redirect(http.StatusSeeOther, "/admin")
 }
 
